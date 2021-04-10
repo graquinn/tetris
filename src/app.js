@@ -16,24 +16,41 @@ document.addEventListener('DOMContentLoaded', () => {
         'pink',
         'blue',
         'yellow',
-        'green'
+        'green',
+        'purple',
+        'red'
     ]
     const displaySquares = document.querySelectorAll('.mini-grid div')
     const displayWidth = 4
-    let displayIndex = 0
+    let hasGameStarted = false
+
 
 
     console.log(squares)
 
     //The Tetrominoes
-    const lTetromino = [
+    const jTetromino = [
         [1, width+1, width*2+1, 2],
         [width, width+1, width+2, width*2+2],
         [1, width+1, width*2+1, width*2],
         [width, width*2, width*2+1, width*2+2]
     ]
-    
+
+    const lTetromino = [
+        [0, 1, width+1, width*2+1],
+        [width, width+1, width+2, 2],
+        [1, width+1, width*2+1, width*2+2],
+        [width*2, width, width+1, width+2]
+    ]
+
     const zTetromino = [
+        [width, width+1, width*2+1, width*2+2],
+        [width*2, width, width+1, 1],
+        [width, width+1, width*2+1, width*2+2],
+        [width*2, width, width+1, 1]
+    ]
+    
+    const sTetromino = [
         [width*2, width*2+1, width+1, width+2],
         [0, width, width+1, width*2+1],
         [width*2, width*2+1, width+1, width+2],
@@ -61,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         [width, width+1, width+2, width+3]
     ]
 
-const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino]
+const theTetrominoes = [jTetromino, lTetromino, zTetromino, sTetromino, tTetromino, oTetromino, iTetromino]
 
 //randomly select tetromino and its first rotation
 let random = Math.floor(Math.random()*theTetrominoes.length)
@@ -215,6 +232,8 @@ function rotate() {
 //tetrominoes w/o rotations
 const upNextTetrominoes = [
     [1, displayWidth+1, displayWidth*2+1, 2],
+    [0, 1, displayWidth+1, displayWidth*2+1],
+    [displayWidth, displayWidth+1, displayWidth*2+1, displayWidth*2+2],
     [displayWidth*2, displayWidth*2+1, displayWidth+1, displayWidth+2],
     [displayWidth, displayWidth+1, 1, displayWidth+2],
     [0, 1, displayWidth, displayWidth+1],
@@ -223,31 +242,38 @@ const upNextTetrominoes = [
 //display the same in the mini-grid display
 
 function displayShape() {
-    //remove any trace of a tetromino from the entire gride
+    //remove any trace of a tetromino from the entire grid
     displaySquares.forEach(square => {
         square.classList.remove('tetromino')
         square.style.backgroundColor = ''
     })
     upNextTetrominoes[nextRandom].forEach(index => {
-        displaySquares[displayIndex + index].classList.add('tetromino')
-        displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandom]
+        displaySquares[index].classList.add('tetromino')
+        displaySquares[index].style.backgroundColor = colors[nextRandom]
     })
 }
 
 //add functionality to the button
-startBtn.addEventListener('click', () => {
+
+startBtn.addEventListener('click', buttonListener)
+
+function buttonListener() {
     if(timerId) {
         clearInterval(timerId)
         timerId = null
         document.removeEventListener('keyup', control)
-    } else {
+    } else if(!timerId){
         draw()
         timerId = setInterval(moveDown, 1000)
-        nextRandom = Math.floor(Math.random()*theTetrominoes.length)
-        displayShape()
+        // nextRandom = Math.floor(Math.random()*theTetrominoes.length)
+        // displayShape()
         document.addEventListener('keyup', control)
+        hasGameStarted = true
     }
-})
+    if (hasGameStarted) {
+        displayShape()
+        }
+}
 
 //add score function
 function addScore() {
@@ -274,6 +300,7 @@ function gameOver() {
     if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
         scoreDisplay.innerHTML = "game over!"
         clearInterval(timerId)
+        document.removeEventListener('keyup', control)
     }
 }
 
