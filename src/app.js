@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    let squares = document.querySelectorAll('.grid div')
+
+    //global variables 
+    let squares = Array.from(document.querySelectorAll('.grid div'))
     const grid = document.querySelector('.grid')
     const scoreDisplay = document.querySelector('#score')
-    const startBtn = document.querySelector('#start-button')
+    const startBtn = document.querySelector('#start-button') 
     const width = 10
     let nextRandom = 0
     let timerId
     let score = 0
+    let currentPosition = 4
+    let currentRotation = 0
     const colors = [
         'orange',
         'pink',
@@ -14,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'yellow',
         'green'
     ]
+    const displaySquares = document.querySelectorAll('.mini-grid div')
+    const displayWidth = 4
+    let displayIndex = 0
 
 
     console.log(squares)
@@ -55,9 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
 
 const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino]
- 
-let currentPosition = 4
-let currentRotation = 0
 
 //randomly select tetromino and its first rotation
 let random = Math.floor(Math.random()*theTetrominoes.length)
@@ -97,8 +101,6 @@ function control(e) {
         moveDown()
     }
 }
-
-document.addEventListener('keyup', control)
 
 //move down function
 function moveDown() {
@@ -152,23 +154,63 @@ function moveRight() {
 
     draw()
 }
+//check functions to see if tetromino can turn or if it is too close to wall
+//check if the next rotation will go thru the wall
+function wallCheck() {
+    let nextRotation = (currentRotation + 1)
+    if (nextRotation === current.length){
+        nextRotation = 0
+    } 
+    let curClosestToLeft = current.reduce(leftWallReducer, width)
+
+    let nextPiece = theTetrominoes[random][nextRotation]
+    let nextClosestLeft = nextPiece.reduce(leftWallReducer, width)
+    let nextClosestRight = nextPiece.reduce(rightWallReducer, 0)
+    while (nextClosestLeft === 0 && nextClosestRight === width-1){
+        //this means we are shifting right or lft depending on the current position and which wall it is closest to
+        if (curClosestToLeft < width/2){
+            currentPosition++
+        } else {
+            currentPosition--
+        }
+        nextClosestLeft = nextPiece.reduce(leftWallReducer, width)
+        nextClosestRight = nextPiece.reduce(rightWallReducer, 0)
+    } 
+    current = nextPiece
+    currentRotation = nextRotation
+
+}
+
+//function for reduce - right wall of grid (get tetromino piece closest to right wall)
+function rightWallReducer(currentMaximum, currentValue) {
+    let positionInBoard = (currentPosition + currentValue) % width
+    if (positionInBoard > currentMaximum){
+        return positionInBoard
+    } else {
+        return currentMaximum
+    }
+}
+
+//function for reduce - left wall of grid (get tetromino piece closest to left wall)
+function leftWallReducer(currentMinimum, currentValue) {
+    let positionInBoard = (currentPosition + currentValue) % width
+    if (positionInBoard < currentMinimum){
+        return positionInBoard
+    } else {
+        return currentMinimum
+    } 
+}
 
 //rotate the tetromino
 function rotate() {
     undraw()
-    currentRotation ++
-    if(currentRotation === current.length) { //if current rotation gets to 4, make it go back to 0
-        currentRotation = 0
-    }
-    current = theTetrominoes[random] [currentRotation]
+    wallCheck()
     draw()
 }
 
 
 //show the up-next tetromino in the mini-grid
-const displaySquares = document.querySelectorAll('.mini-grid div')
-const displayWidth = 4
-let displayIndex = 0
+
 
 //tetrominoes w/o rotations
 const upNextTetrominoes = [
@@ -197,11 +239,13 @@ startBtn.addEventListener('click', () => {
     if(timerId) {
         clearInterval(timerId)
         timerId = null
+        document.removeEventListener('keyup', control)
     } else {
         draw()
         timerId = setInterval(moveDown, 1000)
         nextRandom = Math.floor(Math.random()*theTetrominoes.length)
         displayShape()
+        document.addEventListener('keyup', control)
     }
 })
 
@@ -234,6 +278,8 @@ function gameOver() {
 }
 
 }) 
+
+//create a second level that moves faster w/ music and a new background color
 
 
 let dingosBark = "I love you snubbert!"
