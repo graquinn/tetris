@@ -251,6 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // displayShape()
             document.addEventListener('keyup', control)
             hasGameStarted = true
+            // newGameBtn.style.display ="none"
         }
         if (hasGameStarted) {
             displayShape()
@@ -267,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
         score = 0
         scoreDisplay.innerHTML = score
         hasGameStarted = false
-        newGameBtn.style.display = "hidden"
+        newGameBtn.style.display = "none"
         startGame()
     }
 
