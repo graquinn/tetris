@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     newGameBtn.style.display = "none"
     startBtn.addEventListener('click', startGame)
     newGameBtn.addEventListener('click', newGameButtonListener)
+    const audioPlayer = document.querySelector('.audio-player')
 
     //The Tetrominoes
     const jTetromino = [
@@ -93,6 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
     //randomly select tetromino and its first rotation
     let random = Math.floor(Math.random()*theTetrominoes.length)
     let current = theTetrominoes[random][currentRotation] 
+
+    //audio player controls for tetris song
+    function playAudio() {
+        audioPlayer.play()
+    }
+
+    function pauseAudio () {
+        audioPlayer.pause()
+    }
 
     //draw the tetromino
     function draw() {
@@ -244,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId)
             timerId = null
             document.removeEventListener('keyup', control)
+            pauseAudio()
         } else if(!timerId){
             draw()
             timerId = setInterval(moveDown, 1000)
@@ -251,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // displayShape()
             document.addEventListener('keyup', control)
             hasGameStarted = true
+            playAudio()
             // newGameBtn.style.display ="none"
         }
         if (hasGameStarted) {
@@ -299,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId)
             document.removeEventListener('keyup', control)
             newGameBtn.style.display ="block"
+            pauseAudio()
         }
     }
 }) 
