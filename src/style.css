@@ -1,5 +1,27 @@
+html {
+    height: 100%;
+    background-image: linear-gradient(#51E2F5, #9DF9EF, #EDF7F6, #FFA8B6, #A28089);
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    color: #fff;
+    padding: 0 120px 10px 0;
+    font-size: 5vw;
+}
+
+.score-banner {
+    display: flex;
+    justify-content: center;
+    color: #fff;
+    padding: 0 120px 10px 0;
+    margin-top: -80px;
+}
+
 .container {
     display: flex;
+    justify-content: center;
 }
 
 .grid {
@@ -7,7 +29,7 @@
     height: 400px;
     display: flex;
     flex-wrap: wrap;
-    background-color: rgb(207, 233, 243);
+    background-image: linear-gradient(to top left, #9DF9EF, #EDF7F6)
 }
 
 .grid div {
@@ -27,19 +49,26 @@
     outline: 1px solid black; 
 }
 
+.button-display {
+    display: flex;
+    justify-content: center;
+    padding: 10px 180px 10px 0;
+}
+
 .mini-grid {
     margin-left: 50px;
     width: 80px;
     height: 80px;
     display: flex;
     flex-wrap: wrap;
-    background-color:  rgb(207, 233, 243);
-    outline: 2px solid black; 
+    background-image: linear-gradient(#EDF7F6, #9DF9EF);
+    outline: 1px solid black; 
 }
 
 .mini-grid div {
     height: 20px;
     width: 20px;
 }
+
 
 
